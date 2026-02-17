@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVITTA - Menu Principal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<script>
+    // Verifica se está logado
+    if (!sessionStorage.getItem('usuario_logado')) {
+        window.location.href = 'index.html';
+    }
+</script>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>AVITTA</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="menu.html" class="nav-item active">
+                    <span class="nav-icon">🏠</span>
+                    <span>Iniciar</span>
+                </a>
+                <a href="cadastro.html" class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span>Cadastrar</span>
+                </a>
+                <a href="consultas.html" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span>Registros</span>
+                </a>
+                <a href="consultas.html" class="nav-item">
+                    <span class="nav-icon">🔍</span>
+                    <span>Consultas</span>
+                </a>
+                <a href="alertas.html" class="nav-item">
+                    <span class="nav-icon">⚠️</span>
+                    <span>Alertas</span>
+                    <span class="badge" id="badge-alertas">3</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <h1>Iniciar</h1>
+                <div class="user-info">
+                    <span>Profissional de Saúde</span>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card" onclick="location.href='cadastro.html'">
+                    <div class="card-icon">👤</div>
+                    <h3>Cadastrar Paciente</h3>
+                    <p>Registrar nova gestante no sistema</p>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='consultas.html'">
+                    <div class="card-icon">📄</div>
+                    <h3>Ver Pacientes</h3>
+                    <p>Consultar registros e prontuários</p>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='alertas.html'">
+                    <div class="card-icon">🔔</div>
+                    <h3>Alertas</h3>
+                    <p>Ver pendências de exames e retornos</p>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='profissionais.html'">
+                    <div class="card-icon">👨‍️</div>
+                    <h3>Profissionais</h3>
+                    <p>Gerenciar equipe de saúde</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVITTA - Prontuário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<script>
+    // Verifica se está logado
+    if (!sessionStorage.getItem('usuario_logado')) {
+        window.location.href = 'index.html';
+    }
+</script>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>AVITTA</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="menu.html" class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span>Iniciar</span>
+                </a>
+                <a href="cadastro.html" class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span>Cadastrar</span>
+                </a>
+                <a href="consultas.html" class="nav-item active">
+                    <span class="nav-icon">📋</span>
+                    <span>Registros</span>
+                </a>
+                <a href="alertas.html" class="nav-item">
+                    <span class="nav-icon">⚠️</span>
+                    <span>Alertas</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <h1>Prontuário</h1>
+                <button class="btn-voltar" onclick="voltar()">← Voltar</button>
+            </header>
+
+            <div class="prontuario-wrapper">
+                <!-- DADOS DO PACIENTE -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Dados do Paciente</h2>
+                        <button class="btn-edit">✏️ Editar</button>
+                    </div>
+                    <div class="card-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Nome:</label>
+                                <span>Ana Araujo</span>
+                            </div>
+                            <div class="info-item">
+                                <label>CPF:</label>
+                                <span>000.000.000-01</span>
+                            </div>
+                            <div class="info-item">
+                                <label>CNS:</label>
+                                <span>700000000000001</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Telefone:</label>
+                                <span>(53) 99999-0001</span>
+                            </div>
+                            <div class="info-item full">
+                                <label>Endereço:</label>
+                                <span>Rua das Flores, 10 - Apto 101, Centro, Pelotas</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Data da Concepção:</label>
+                                <span>01/12/2025</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Status:</label>
+                                <span class="status-ativo">ATIVO</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HISTÓRICO DE ATENDIMENTOS -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Histórico de Atendimentos</h2>
+                        <button class="btn-primary" onclick="novoAtendimento()">+ Novo Atendimento</button>
+                    </div>
+                    <div class="card-content">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-date">
+                                    <div class="date-day">10</div>
+                                    <div class="date-month">FEV</div>
+                                    <div class="date-year">2026</div>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <h3>Atendimento - 10:30</h3>
+                                        <span class="local">Posto Centro</span>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <p><strong>Profissional:</strong> Dr. Silva (ID: 1)</p>
+                                        <p><strong>Retorno:</strong> 05/03/2026</p>
+                                        <p><strong>Ficha Técnica:</strong> <a href="#">docs/p1_a2.pdf</a></p>
+                                    </div>
+                                    <div class="timeline-actions">
+                                        <button class="btn-small" onclick="verExames(2)">Ver Exames</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-date">
+                                    <div class="date-day">01</div>
+                                    <div class="date-month">FEV</div>
+                                    <div class="date-year">2026</div>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <h3>Atendimento - 09:00</h3>
+                                        <span class="local">Posto Centro</span>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <p><strong>Profissional:</strong> Dr. Silva (ID: 1)</p>
+                                        <p><strong>Retorno:</strong> 28/02/2026</p>
+                                        <p><strong>Ficha Técnica:</strong> <a href="#">docs/p1_a1.pdf</a></p>
+                                    </div>
+                                    <div class="timeline-actions">
+                                        <button class="btn-small" onclick="verExames(1)">Ver Exames</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

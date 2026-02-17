@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVITTA - Alertas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<script>
+    // Verifica se está logado
+    if (!sessionStorage.getItem('usuario_logado')) {
+        window.location.href = 'index.html';
+    }
+</script>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>AVITTA</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="menu.html" class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span>Iniciar</span>
+                </a>
+                <a href="cadastro.html" class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span>Cadastrar</span>
+                </a>
+                <a href="consultas.html" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span>Registros</span>
+                </a>
+                <a href="alertas.html" class="nav-item active">
+                    <span class="nav-icon">⚠️</span>
+                    <span>Alertas</span>
+                    <span class="badge">3</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <h1>Alertas</h1>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="alertas-grid">
+                    <div class="alert-card alerta-pendente">
+                        <div class="alert-icon">⚠️</div>
+                        <div class="alert-content">
+                            <h3>Exame Pendente</h3>
+                            <p><strong>Paciente:</strong> Ana Araujo</p>
+                            <p><strong>CPF:</strong> 000.000.000-01</p>
+                            <p><strong>Exame:</strong> Ultrassom</p>
+                            <p><strong>Data:</strong> 10/03/2026</p>
+                            <span class="alert-status">PENDENTE</span>
+                        </div>
+                    </div>
+
+                    <div class="alert-card alerta-retorno">
+                        <div class="alert-icon">📅</div>
+                        <div class="alert-content">
+                            <h3>Retorno Pendente</h3>
+                            <p><strong>Paciente:</strong> Beatriz Barros</p>
+                            <p><strong>CPF:</strong> 000.000.000-02</p>
+                            <p><strong>Data do Retorno:</strong> 24/02/2026</p>
+                            <span class="alert-status">PENDENTE</span>
+                        </div>
+                    </div>
+
+                    <div class="alert-card alerta-exame">
+                        <div class="alert-icon"></div>
+                        <div class="alert-content">
+                            <h3>Exame Pendente</h3>
+                            <p><strong>Paciente:</strong> Camila Cardoso</p>
+                            <p><strong>CPF:</strong> 000.000.000-03</p>
+                            <p><strong>Exame:</strong> Urina</p>
+                            <p><strong>Data:</strong> 04/02/2026</p>
+                            <span class="alert-status">ATRASADO</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

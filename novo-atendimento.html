@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVITTA - Novo Atendimento</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<script>
+    // Verifica se está logado
+    if (!sessionStorage.getItem('usuario_logado')) {
+        window.location.href = 'index.html';
+    }
+</script>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>AVITTA</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="menu.html" class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span>Iniciar</span>
+                </a>
+                <a href="cadastro.html" class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span>Cadastrar</span>
+                </a>
+                <a href="consultas.html" class="nav-item active">
+                    <span class="nav-icon">📋</span>
+                    <span>Registros</span>
+                </a>
+                <a href="alertas.html" class="nav-item">
+                    <span class="nav-icon">⚠️</span>
+                    <span>Alertas</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <h1>Novo Atendimento</h1>
+                <button class="btn-voltar" onclick="voltar()">← Voltar</button>
+            </header>
+
+            <div class="content-wrapper">
+                <form class="form-container" onsubmit="salvarAtendimento(event)">
+                    <div class="form-section">
+                        <h3>Dados do Paciente</h3>
+                        <div class="form-row">
+                            <div class="form-group full">
+                                <label>Paciente</label>
+                                <input type="text" id="nome-paciente" readonly>
+                                <input type="hidden" id="id-paciente">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>CPF</label>
+                                <input type="text" id="cpf-paciente" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>CNS</label>
+                                <input type="text" id="cns-paciente" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Dados do Atendimento</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Data do Atendimento *</label>
+                                <input type="date" name="data_atendimento" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Hora *</label>
+                                <input type="time" name="hora_atendimento" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full">
+                                <label>Local do Atendimento *</label>
+                                <input type="text" name="local_atendimento" placeholder="Ex: Posto Centro" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Profissional Responsável *</label>
+                                <select name="id_profissional" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="1">Dr. Silva (ID: 1)</option>
+                                    <option value="2">Dr. Santos (ID: 2)</option>
+                                    <option value="3">Dr. Oliveira (ID: 3)</option>
+                                    <option value="5">Dr. Ferreira (ID: 5)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Data de Retorno</label>
+                                <input type="date" name="data_retorno">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Exames Solicitados</h3>
+                        <div id="exames-container">
+                            <div class="form-row exame-item">
+                                <div class="form-group">
+                                    <label>Tipo de Exame</label>
+                                    <input type="text" name="tipo_exame[]" placeholder="Ex: Hemograma">
+                                </div>
+                                <div class="form-group">
+                                    <label>Data do Exame</label>
+                                    <input type="date" name="data_exame[]">
+                                </div>
+                                <div class="form-group">
+                                    <label>Ação</label>
+                                    <button type="button" class="btn-remove" onclick="removerExame(this)">Remover</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-secondary" onclick="adicionarExame()">+ Adicionar Exame</button>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="voltar()">Cancelar</button>
+                        <button type="submit" class="btn-primary">Salvar Atendimento</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Carregar dados do paciente ao iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            const idPaciente = localStorage.getItem('paciente_selecionado');
+            if (idPaciente) {
+                // Aqui você faria uma busca no backend
+                // Por enquanto, dados fixos para teste
+                document.getElementById('id-paciente').value = idPaciente;
+                document.getElementById('nome-paciente').value = 'Ana Araujo';
+                document.getElementById('cpf-paciente').value = '000.000.000-01';
+                document.getElementById('cns-paciente').value = '700000000000001';
+            }
+        });
+
+        function adicionarExame() {
+            const container = document.getElementById('exames-container');
+            const novoExame = document.createElement('div');
+            novoExame.className = 'form-row exame-item';
+            novoExame.innerHTML = `
+                <div class="form-group">
+                    <label>Tipo de Exame</label>
+                    <input type="text" name="tipo_exame[]" placeholder="Ex: Ultrassom">
+                </div>
+                <div class="form-group">
+                    <label>Data do Exame</label>
+                    <input type="date" name="data_exame[]">
+                </div>
+                <div class="form-group">
+                    <label>Ação</label>
+                    <button type="button" class="btn-remove" onclick="removerExame(this)">Remover</button>
+                </div>
+            `;
+            container.appendChild(novoExame);
+        }
+
+        function removerExame(btn) {
+            btn.closest('.exame-item').remove();
+        }
+
+        function salvarAtendimento(event) {
+            event.preventDefault();
+            const form = event.target;
+            const dados = new FormData(form);
+            
+            // Coletar exames
+            const exames = [];
+            const tiposExame = dados.getAll('tipo_exame[]');
+            const datasExame = dados.getAll('data_exame[]');
+            
+            for (let i = 0; i < tiposExame.length; i++) {
+                if (tiposExame[i] && datasExame[i]) {
+                    exames.push({
+                        tipo: tiposExame[i],
+                        data: datasExame[i]
+                    });
+                }
+            }
+
+            console.log('Atendimento:', Object.fromEntries(dados));
+            console.log('Exames:', exames);
+            
+            alert('Atendimento salvo com sucesso!');
+            window.location.href = 'prontuario.html';
+        }
+    </script>
+</body>
+</html>

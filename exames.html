@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVITTA - Exames</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<script>
+    // Verifica se está logado
+    if (!sessionStorage.getItem('usuario_logado')) {
+        window.location.href = 'index.html';
+    }
+</script>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>AVITTA</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="menu.html" class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span>Iniciar</span>
+                </a>
+                <a href="cadastro.html" class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span>Cadastrar</span>
+                </a>
+                <a href="consultas.html" class="nav-item active">
+                    <span class="nav-icon">📋</span>
+                    <span>Registros</span>
+                </a>
+                <a href="alertas.html" class="nav-item">
+                    <span class="nav-icon">⚠️</span>
+                    <span>Alertas</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <h1>Exames do Atendimento</h1>
+                <button class="btn-voltar" onclick="voltar()">← Voltar</button>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Informações do Atendimento</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Paciente:</label>
+                                <span id="nome-paciente">Ana Araujo</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Data:</label>
+                                <span id="data-atendimento">10/02/2026</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Hora:</label>
+                                <span id="hora-atendimento">10:30</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Profissional:</label>
+                                <span id="profissional">Dr. Silva (ID: 1)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Exames Solicitados</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tipo de Exame</th>
+                                        <th>Data Solicitação</th>
+                                        <th>Status</th>
+                                        <th>Data Realização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-exames">
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Hemograma</td>
+                                        <td>05/02/2026</td>
+                                        <td><span class="status-realizado">REALIZADO</span></td>
+                                        <td>06/02/2026</td>
+                                        <td>
+                                            <button class="btn-action">📄 Ver</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Ultrassom</td>
+                                        <td>10/03/2026</td>
+                                        <td><span class="status-pendente">PENDENTE</span></td>
+                                        <td>-</td>
+                                        <td>
+                                            <button class="btn-action" onclick="marcarRealizado(2)">✓ Realizar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const idAtendimento = localStorage.getItem('atendimento_selecionado');
+            console.log('Exames do atendimento:', idAtendimento);
+            
+            // Aqui você carregaria os exames do backend
+            // Por enquanto, dados estáticos
+        });
+
+        function marcarRealizado(idExame) {
+            const dataRealizacao = prompt('Digite a data de realização (DD/MM/AAAA):');
+            if (dataRealizacao) {
+                alert(`Exame ${idExame} marcado como realizado em ${dataRealizacao}`);
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
