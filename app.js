@@ -1,14 +1,16 @@
-// SISTEMA DE LOGIN
+
 function fazerLogin(event) {
     event.preventDefault();
     
+    const tipoUsuario = document.getElementById('tipo-usuario') ? 
+                        document.getElementById('tipo-usuario').value : 'profissional';
     const usuario = document.getElementById('usuario').value;
     const senha = document.getElementById('senha').value;
     
-    // Simulação de login
     if (usuario && senha) {
-        // Salva que está logado (apenas para esta sessão)
+        // Salva dados da sessão
         sessionStorage.setItem('usuario_logado', usuario);
+        sessionStorage.setItem('tipo_usuario', tipoUsuario);
         sessionStorage.setItem('login_time', new Date().toISOString());
         
         // Redireciona para o menu
@@ -19,15 +21,15 @@ function fazerLogin(event) {
 }
 
 function logout() {
-    // Limpa os dados
+    // Limpa TODOS os dados da sessão
     sessionStorage.clear();
     localStorage.clear();
     
-    // Força redirecionamento para login
+    // Redireciona para o login
     window.location.href = 'index.html';
 }
 
-// NAVEGAÇÃO
+
 function navegar(pagina) {
     window.location.href = pagina;
 }
@@ -36,7 +38,6 @@ function voltar() {
     window.history.back();
 }
 
-// TABS
 function mudarTab(tabName) {
     // Remove active de todas as tabs
     const tabs = document.querySelectorAll('.tab-btn');
@@ -50,10 +51,14 @@ function mudarTab(tabName) {
     event.target.classList.add('active');
     
     // Mostra o conteúdo correspondente
-    document.getElementById(`tab-${tabName}`).classList.add('active');
+    const tabContent = document.getElementById(`tab-${tabName}`);
+    if (tabContent) {
+        tabContent.classList.add('active');
+    }
 }
 
 // CADASTROS
+
 function cadastrarPaciente(event) {
     event.preventDefault();
     const form = event.target;
@@ -64,7 +69,7 @@ function cadastrarPaciente(event) {
     
     alert('Paciente cadastrado com sucesso!');
     form.reset();
-    // window.location.href = 'consultas.html';
+    window.location.href = 'consultas.html';
 }
 
 function cadastrarProfissional(event) {
@@ -97,106 +102,169 @@ function cadastrarEstudante(event) {
     form.reset();
 }
 
-// CONSULTAS
+// CONSULTAS E BUSCAS
+
 function buscarPaciente() {
-    const busca = document.getElementById('busca').value.toLowerCase();
+    const busca = document.getElementById('busca');
+    if (!busca) return;
+    
+    const filtro = busca.value.toLowerCase();
     const tabela = document.getElementById('tabela-pacientes');
+    if (!tabela) return;
+    
     const linhas = tabela.getElementsByTagName('tr');
     
-    for (let linha of linhas) {
+    for (let i = 0; i < linhas.length; i++) {
+        const linha = linhas[i];
         const texto = linha.textContent.toLowerCase();
-        linha.style.display = texto.includes(busca) ? '' : 'none';
+        
+        if (texto.includes(filtro)) {
+            linha.style.display = '';
+        } else {
+            linha.style.display = 'none';
+        }
     }
 }
 
 function verProntuario(idPaciente) {
-    // Salva o ID no localStorage e navega para o prontuário
-    localStorage.setItem('paciente_selecionado', idPaciente);
+    // Salva o ID no sessionStorage e navega para o prontuário
+    sessionStorage.setItem('paciente_selecionado', idPaciente);
     window.location.href = 'prontuario.html';
 }
 
 // PRONTUÁRIO
+
 function novoAtendimento() {
-    // Redireciona para página de novo atendimento
     window.location.href = 'novo-atendimento.html';
 }
 
 function verExames(idAtendimento) {
     // Salva o ID e navega para página de exames
-    localStorage.setItem('atendimento_selecionado', idAtendimento);
+    sessionStorage.setItem('atendimento_selecionado', idAtendimento);
     window.location.href = 'exames.html';
 }
 
 function editarPaciente() {
-    // Implementar edição do paciente
-    const idPaciente = localStorage.getItem('paciente_selecionado');
+    const idPaciente = sessionStorage.getItem('paciente_selecionado');
     alert(`Editar paciente ID: ${idPaciente}`);
+    // Implementar edição
 }
 
 // ALERTAS
+
 function carregarAlertas() {
-    // Buscar alertas do backend (VIEW VW_Alertas)
-    const alertas = [
-        { tipo: 'Exame', paciente: 'Ana Araujo', cpf: '000.000.000-01', exame: 'Ultrassom', data: '10/03/2026', status: 'PENDENTE' },
-        { tipo: 'Retorno', paciente: 'Beatriz Barros', cpf: '000.000.000-02', data: '24/02/2026', status: 'PENDENTE' },
-        { tipo: 'Exame', paciente: 'Camila Cardoso', cpf: '000.000.000-03', exame: 'Urina', data: '04/02/2026', status: 'ATRASADO' }
-    ];
-    
-    // Atualizar badge
+    // Atualizar badge de alertas
     const badge = document.getElementById('badge-alertas');
     if (badge) {
-        badge.textContent = alertas.length;
+        // Simulação - na prática viria do banco
+        const totalAlertas = 3;
+        badge.textContent = totalAlertas;
+        
+        if (totalAlertas > 0) {
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
     }
 }
 
-// INICIALIZAÇÃO
-document.addEventListener('DOMContentLoaded', function() {
-    // Verifica se está logado
-    const usuario = localStorage.getItem('usuario_logado');
-    const paginaAtual = window.location.pathname.split('/').pop();
+// SELEÇÃO DE TIPO DE USUÁRIO (LOGIN)
+
+function selecionarTipo(tipo) {
+    // Remove active de todos os botões
+    const botoes = document.querySelectorAll('.btn-tipo-usuario');
+    botoes.forEach(btn => btn.classList.remove('active'));
     
-    if (!usuario && paginaAtual !== 'index.html' && paginaAtual !== '') {
-        window.location.href = 'index.html';
+    // Adiciona active no botão clicado
+    if (event && event.target) {
+        event.target.classList.add('active');
     }
     
-    // Carrega alertas se estiver na página de alertas
+    // Atualiza o tipo de usuário
+    const inputTipo = document.getElementById('tipo-usuario');
+    if (inputTipo) {
+        inputTipo.value = tipo;
+    }
+    
+    console.log('Tipo selecionado:', tipo);
+}
+
+// INICIALIZAÇÃO - AO CARREGAR PÁGINA
+
+document.addEventListener('DOMContentLoaded', function() {
+    const paginaAtual = window.location.pathname.split('/').pop();
+    
+    // VERIFICAÇÃO DE LOGIN
+    
+    // Se NÃO estiver na página de login, verifica se está logado
+    if (paginaAtual !== 'index.html' && paginaAtual !== '') {
+        const usuarioLogado = sessionStorage.getItem('usuario_logado');
+        
+        if (!usuarioLogado) {
+            // Não está logado - redireciona para login
+            window.location.href = 'index.html';
+            return;
+        }
+    }
+    
+    // Se estiver na página de login e já estiver logado, vai para o menu
+    if (paginaAtual === 'index.html' || paginaAtual === '') {
+        const usuarioLogado = sessionStorage.getItem('usuario_logado');
+        if (usuarioLogado) {
+            window.location.href = 'menu.html';
+            return;
+        }
+    }
+    
+    // CARREGAR ALERTAS (se estiver na página)
+    
     if (paginaAtual === 'alertas.html') {
         carregarAlertas();
     }
-});
-
-// Máscaras para inputs
-document.addEventListener('input', function(e) {
+    
+    // CARREGAR DADOS DO PACIENTE (se for prontuário)
+    
+    if (paginaAtual === 'prontuario.html') {
+        const idPaciente = sessionStorage.getItem('paciente_selecionado');
+        if (!idPaciente) {
+            // Se não tem paciente selecionado, volta para consultas
+            window.location.href = 'consultas.html';
+        }
+    }
+    
+    // MÁSCARAS PARA INPUTS
+    
     // Máscara CPF
-    if (e.target.name === 'cpf') {
-        let valor = e.target.value.replace(/\D/g, '');
-        valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
-        valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
-        valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-        e.target.value = valor;
+    const inputCPF = document.querySelector('input[name="cpf"]');
+    if (inputCPF) {
+        inputCPF.addEventListener('input', function(e) {
+            let valor = e.target.value.replace(/\D/g, '');
+            valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+            valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
+            valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = valor;
+        });
     }
     
     // Máscara Telefone
-    if (e.target.name === 'telefone') {
-        let valor = e.target.value.replace(/\D/g, '');
-        valor = valor.replace(/^(\d{2})(\d)/g, '($1) $2');
-        valor = valor.replace(/(\d)(\d{4})$/, '$1-$2');
-        e.target.value = valor;
-    }
-});
-
-// VERIFICAR LOGIN AO CARREGAR QUALQUER PÁGINA
-document.addEventListener('DOMContentLoaded', function() {
-    const paginaAtual = window.location.pathname.split('/').pop();
-    
-    if (paginaAtual !== 'index.html' && paginaAtual !== '') {
-
-        localStorage.clear();
-        
-        window.location.href = 'index.html';
+    const inputTelefone = document.querySelector('input[name="telefone"]');
+    if (inputTelefone) {
+        inputTelefone.addEventListener('input', function(e) {
+            let valor = e.target.value.replace(/\D/g, '');
+            valor = valor.replace(/^(\d{2})(\d)/g, '($1) $2');
+            valor = valor.replace(/(\d)(\d{4})$/, '$1-$2');
+            e.target.value = valor;
+        });
     }
     
-    if (paginaAtual === 'index.html' || paginaAtual === '') {
-        localStorage.clear();
-    }
+    // RESETAR FORMULÁRIOS AO CARREGAR
+    
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        if (!form.classList.contains('login-form')) {
+            form.reset();
+        }
+    });
+    
+    console.log('Página carregada:', paginaAtual);
 });

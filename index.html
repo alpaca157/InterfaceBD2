@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
+<script>
+    // Se já estiver logado, vai direto para o menu
+    if (sessionStorage.getItem('usuario_logado')) {
+        window.location.href = 'menu.html';
+    }
+</script>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
