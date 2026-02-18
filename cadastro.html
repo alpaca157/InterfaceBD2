@@ -6,14 +6,6 @@
     <title>AVITTA - Cadastrar</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
-<script>
-    // Verifica se está logado
-    if (!sessionStorage.getItem('usuario_logado')) {
-        window.location.href = 'index.html';
-    }
-</script>
-
 <body>
     <div class="app-container">
         <aside class="sidebar">
@@ -52,7 +44,7 @@
                 <h1>Cadastrar</h1>
             </header>
 
-            <div class="tabs-container">
+            <div class="content-wrapper">
                 <div class="tabs">
                     <button class="tab-btn active" onclick="mudarTab('paciente')">Paciente</button>
                     <button class="tab-btn" onclick="mudarTab('profissional')">Profissional</button>
@@ -149,11 +141,18 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Senha *</label>
-                                    <input type="password" name="senha" required>
+                                    <input type="password" id="senha-profissional" name="senha" required minlength="6">
                                 </div>
                                 <div class="form-group">
+                                    <label>Confirmar Senha *</label>
+                                    <input type="password" id="confirmar-senha-profissional" name="confirmar_senha" required minlength="6">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
                                     <label>ID Programa Saúde</label>
-                                    <input type="number" name="id_programa" value="1">
+                                    <input type="number" name="id_programa" value="1" min="1" readonly>
+                                    <small style="color: #999; font-size: 11px; display: block; margin-top: 5px;">Padrão: 1</small>
                                 </div>
                             </div>
                         </div>
@@ -173,7 +172,11 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Senha *</label>
-                                    <input type="password" name="senha" required>
+                                    <input type="password" id="senha-agente" name="senha" required minlength="6">
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirmar Senha *</label>
+                                    <input type="password" id="confirmar-senha-agente" name="confirmar_senha" required minlength="6">
                                 </div>
                             </div>
                         </div>
@@ -193,7 +196,11 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Senha *</label>
-                                    <input type="password" name="senha" required>
+                                    <input type="password" id="senha-estudante" name="senha" required minlength="6">
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirmar Senha *</label>
+                                    <input type="password" id="confirmar-senha-estudante" name="confirmar_senha" required minlength="6">
                                 </div>
                             </div>
                         </div>

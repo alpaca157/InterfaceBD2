@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVITTA - Profissionais</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>AVITTA</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="menu.html" class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span>Iniciar</span>
+                </a>
+                <a href="cadastro.html" class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span>Cadastrar</span>
+                </a>
+                <a href="consultas.html" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span>Registros</span>
+                </a>
+                <a href="consultas.html" class="nav-item">
+                    <span class="nav-icon">🔍</span>
+                    <span>Consultas</span>
+                </a>
+                <a href="alertas.html" class="nav-item">
+                    <span class="nav-icon">⚠️</span>
+                    <span>Alertas</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <h1>Profissionais de Saúde</h1>
+                <button class="btn-voltar" onclick="voltar()">← Voltar</button>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="tabs-profissionais">
+                    <button class="tab-profissional active" onclick="mudarAbaProfissionais('profissionais')">PROFISSIONAIS</button>
+                    <button class="tab-profissional" onclick="mudarAbaProfissionais('agentes')">AGENTES DE SAÚDE</button>
+                    <button class="tab-profissional" onclick="mudarAbaProfissionais('estudantes')">ESTUDANTES</button>
+                </div>
+
+                <!-- ABA PROFISSIONAIS -->
+                <div id="aba-profissionais" class="conteudo-aba active">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ID Programa Saúde</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-profissionais">
+                                <tr>
+                                    <td>1</td>
+                                    <td>1</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action" onclick="verPacientesProfissional(1)">👥 Ver Pacientes</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>1</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action" onclick="verPacientesProfissional(2)">👥 Ver Pacientes</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>1</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action" onclick="verPacientesProfissional(3)">👥 Ver Pacientes</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>1</td>
+                                    <td><span class="status-inativo">INATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action" onclick="verPacientesProfissional(4)">👥 Ver Pacientes</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>1</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action" onclick="verPacientesProfissional(5)">👥 Ver Pacientes</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ABA AGENTES -->
+                <div id="aba-agentes" class="conteudo-aba">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-agentes">
+                                <tr>
+                                    <td>1</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action">📋 Detalhes</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action">📋 Detalhes</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action">📋 Detalhes</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td><span class="status-inativo">INATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action">📋 Detalhes</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ABA ESTUDANTES -->
+                <div id="aba-estudantes" class="conteudo-aba">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-estudantes">
+                                <tr>
+                                    <td>1</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action">📋 Detalhes</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td><span class="status-ativo">ATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action">📋 Detalhes</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td><span class="status-inativo">INATIVO</span></td>
+                                    <td>
+                                        <button class="btn-action">📋 Detalhes</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        function mudarAbaProfissionais(tipo) {
+            // Remove active de todas as tabs
+            document.querySelectorAll('.tab-profissional').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active de todos os conteúdos
+            document.querySelectorAll('.conteudo-aba').forEach(conteudo => {
+                conteudo.classList.remove('active');
+            });
+            
+            // Adiciona active na tab clicada
+            event.target.classList.add('active');
+            
+            // Mostra o conteúdo correspondente
+            document.getElementById(`aba-${tipo}`).classList.add('active');
+        }
+
+        function verPacientesProfissional(idProfissional) {
+            alert(`Ver pacientes do profissional ID: ${idProfissional}`);
+            // Aqui você pode implementar uma página ou modal com os pacientes
+        }
+    </script>
+</body>
+</html>
