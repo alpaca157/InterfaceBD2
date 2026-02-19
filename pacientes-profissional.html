@@ -47,24 +47,26 @@
 
             <div class="content-wrapper">
                 <div class="profissional-info">
-                    <h2 id="nome-profissional">Profissional ID: <span id="id-profissional-display"></span></h2>
-                    <p>Total de pacientes ativos: <strong id="total-pacientes">0</strong></p>
+                    <h2>Profissional ID: <span id="id-profissional-display"></span></h2>
+                    <p>Total de pacientes: <strong id="total-pacientes">0</strong></p>
                 </div>
 
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>ID Paciente</th>
+                                <th>ID</th>
                                 <th>Nome</th>
                                 <th>CPF</th>
-                                <th>Data de Início do Vínculo</th>
+                                <th>Data Início</th>
                                 <th>Status</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-pacientes-profissional">
-                            <!-- Dados serão carregados via JavaScript -->
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px;">Carregando...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -74,7 +76,6 @@
 
     <script src="app.js"></script>
     <script>
-        // Carregar pacientes do profissional ao iniciar
         document.addEventListener('DOMContentLoaded', function() {
             const idProfissional = sessionStorage.getItem('profissional_selecionado');
             
@@ -85,83 +86,56 @@
             }
 
             document.getElementById('id-profissional-display').textContent = idProfissional;
-
-            // Simulação de dados (na prática viria do banco de dados)
-            // Usando a consulta: Listar todos os pacientes de um profissional - Ativo
-            carregarPacientesProfissional(idProfissional);
+            carregarPacientesDoProfissional(idProfissional);
         });
 
-        function carregarPacientesProfissional(idProfissional) {
-            // Dados simulados baseados no seu banco de dados
-            const pacientesPorProfissional = {
-                '1': [
-                    { id: 1, nome: 'Ana Araujo', cpf: '000.000.000-01', dataInicio: '2026-01-10', status: 'ATIVO' },
-                    { id: 2, nome: 'Beatriz Barros', cpf: '000.000.000-02', dataInicio: '2026-01-26', status: 'ATIVO' },
-                    { id: 7, nome: 'Gabriela Gomes', cpf: '000.000.000-07', dataInicio: '2026-01-12', status: 'ATIVO' },
-                    { id: 11, nome: 'Karina Kruger', cpf: '000.000.000-11', dataInicio: '2026-01-06', status: 'ATIVO' }
-                ],
-                '2': [
-                    { id: 5, nome: 'Eduarda Esteves', cpf: '000.000.000-05', dataInicio: '2026-01-02', status: 'ATIVO' },
-                    { id: 8, nome: 'Helena Hoffmann', cpf: '000.000.000-08', dataInicio: '2026-01-08', status: 'ATIVO' },
-                    { id: 12, nome: 'Larissa Lima', cpf: '000.000.000-12', dataInicio: '2026-01-09', status: 'ATIVO' }
-                ],
-                '3': [
-                    { id: 3, nome: 'Camila Cardoso', cpf: '000.000.000-03', dataInicio: '2026-01-20', status: 'ATIVO' },
-                    { id: 6, nome: 'Fernanda Freitas', cpf: '000.000.000-06', dataInicio: '2026-01-25', status: 'ATIVO' },
-                    { id: 9, nome: 'Isabela Iglesias', cpf: '000.000.000-09', dataInicio: '2026-01-18', status: 'ATIVO' }
-                ],
-                '5': [
-                    { id: 4, nome: 'Daniela Dias', cpf: '000.000.000-04', dataInicio: '2026-01-15', status: 'ATIVO' },
-                    { id: 10, nome: 'Julia Junqueira', cpf: '000.000.000-10', dataInicio: '2026-01-03', status: 'ATIVO' }
-                ]
-            };
-
-            const pacientes = pacientesPorProfissional[idProfissional] || [];
-            
+        async function carregarPacientesDoProfissional(idProfissional) {
             const tbody = document.getElementById('tabela-pacientes-profissional');
-            tbody.innerHTML = '';
-
-            if (pacientes.length === 0) {
+            
+            try {
+                const response = await fetch(`${API_URL}/profissionais/${idProfissional}/pacientes`);
+                const pacientes = await response.json();
+                
+                tbody.innerHTML = '';
+                
+                if (pacientes.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
+                                Nenhum paciente vinculado
+                            </td>
+                        </tr>
+                    `;
+                    document.getElementById('total-pacientes').textContent = '0';
+                    return;
+                }
+                
+                pacientes.forEach(paciente => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${paciente.ID_Paciente}</td>
+                        <td>${paciente.Nome}</td>
+                        <td>${formatarCPF(paciente.CPF)}</td>
+                        <td>${formatarData(paciente.Data_Inicio)}</td>
+                        <td><span class="status-ativo">ATIVO</span></td>
+                        <td>
+                            <button class="btn-action" onclick="verProntuario(${paciente.ID_Paciente})">📄 Prontuário</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                
+                document.getElementById('total-pacientes').textContent = pacientes.length;
+            } catch (error) {
+                console.error('Erro:', error);
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
-                            Nenhum paciente vinculado a este profissional
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #dc3545;">
+                            Erro ao carregar pacientes
                         </td>
                     </tr>
                 `;
-                document.getElementById('total-pacientes').textContent = '0';
-                return;
             }
-
-            pacientes.forEach(paciente => {
-                const tr = document.createElement('tr');
-                tr.onclick = function(e) {
-                    if (!e.target.closest('button')) {
-                        verProntuario(paciente.id);
-                    }
-                };
-                
-                tr.innerHTML = `
-                    <td>${paciente.id}</td>
-                    <td>${paciente.nome}</td>
-                    <td>${paciente.cpf}</td>
-                    <td>${formatarData(paciente.dataInicio)}</td>
-                    <td><span class="status-${paciente.status.toLowerCase()}">${paciente.status}</span></td>
-                    <td>
-                        <button class="btn-action" onclick="verProntuario(${paciente.id})">📄 Prontuário</button>
-                    </td>
-                `;
-                
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('total-pacientes').textContent = pacientes.length;
-        }
-
-        function formatarData(dataISO) {
-            if (!dataISO) return '-';
-            const [ano, mes, dia] = dataISO.split('-');
-            return `${dia}/${mes}/${ano}`;
         }
     </script>
 </body>
