@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVITTA - Vínculos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>AVITTA</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="menu.html" class="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span>Iniciar</span>
+                </a>
+                <a href="cadastro.html" class="nav-item">
+                    <span class="nav-icon">📝</span>
+                    <span>Cadastrar</span>
+                </a>
+                <a href="consultas.html" class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span>Registros</span>
+                </a>
+                <a href="vinculos.html" class="nav-item active">
+                    <span class="nav-icon">🔗</span>
+                    <span>Vínculos</span>
+                </a>
+                <a href="alertas.html" class="nav-item">
+                    <span class="nav-icon">⚠️</span>
+                    <span>Alertas</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">Sair</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <h1>Gerenciar Vínculos</h1>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="form-container">
+                    <h3>Novo Vínculo Paciente-Profissional</h3>
+                    <form onsubmit="criarVinculo(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Paciente</label>
+                                <select id="select-paciente" required>
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Profissional</label>
+                                <select id="select-profissional" required>
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Data de Início</label>
+                                <input type="date" id="data-inicio" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">Criar Vínculo</button>
+                    </form>
+                </div>
+
+                <div class="table-container">
+                    <h3>Vínculos Ativos</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Paciente</th>
+                                <th>Profissional</th>
+                                <th>Data Início</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-vinculos">
+                            <tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Carregar dados ao iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarPacientes();
+            carregarProfissionais();
+            carregarVinculos();
+        });
+
+        async function carregarPacientes() {
+            const response = await fetch(`${API_URL}/pacientes`);
+            const pacientes = await response.json();
+            
+            const select = document.getElementById('select-paciente');
+            pacientes.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.ID_Paciente;
+                option.textContent = `${p.Nome} (CPF: ${p.CPF})`;
+                select.appendChild(option);
+            });
+        }
+
+        async function carregarProfissionais() {
+            const response = await fetch(`${API_URL}/profissionais`);
+            const profissionais = await response.json();
+            
+            const select = document.getElementById('select-profissional');
+            profissionais.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.ID_Profissional_Saude;
+                option.textContent = `Profissional ID: ${p.ID_Profissional_Saude}`;
+                select.appendChild(option);
+            });
+        }
+
+        async function criarVinculo(event) {
+            event.preventDefault();
+            
+            const data = {
+                id_paciente: parseInt(document.getElementById('select-paciente').value),
+                id_profissional: parseInt(document.getElementById('select-profissional').value),
+                data_inicio: document.getElementById('data-inicio').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/vinculos/profissional`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.sucesso) {
+                    alert('✅ Vínculo criado com sucesso!');
+                    carregarVinculos();
+                    event.target.reset();
+                } else {
+                    alert('❌ Erro: ' + result.erro);
+                }
+            } catch (error) {
+                alert('❌ Erro de conexão');
+            }
+        }
+
+        async function carregarVinculos() {
+            // Implementar carga de vínculos ativos
+            // Usar consulta SQL apropriada
+        }
+
+        async function encerrarVinculo(idPaciente, idProfissional) {
+            if (!confirm('Deseja encerrar este vínculo?')) return;
+            
+            try {
+                const response = await fetch(
+                    `${API_URL}/vinculos/profissional/${idPaciente}/${idProfissional}`,
+                    { method: 'PUT' }
+                );
+                
+                const result = await response.json();
+                
+                if (result.sucesso) {
+                    alert('✅ Vínculo encerrado!');
+                    carregarVinculos();
+                } else {
+                    alert('❌ Erro: ' + result.erro);
+                }
+            } catch (error) {
+                alert('❌ Erro de conexão');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -5,40 +5,197 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AVITTA - Alertas</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .alertas-container {
+            padding: 20px;
+            max-width: 100%;
+        }
+
+        .alertas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .alert-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .alert-card.atrasado {
+            border-left-color: #dc3545;
+        }
+
+        .alert-card.pendente {
+            border-left-color: #ffc107;
+        }
+
+        .alert-header {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .alert-header h3 {
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .alert-info {
+            font-size: 13px;
+            color: #555;
+            margin: 4px 0;
+            line-height: 1.4;
+        }
+
+        .alert-info strong {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .alert-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .alert-section {
+            background: #fff9e6;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .alert-section h4 {
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .alert-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .alert-item strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .alert-item div {
+            margin: 3px 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .status-atrasado {
+            background: #ffe6e6;
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .status-pendente {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
+        }
+
+        .alert-footer {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+            text-align: center;
+        }
+
+        .btn-prontuario {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            display: block;
+        }
+
+        .btn-prontuario:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .sem-alertas {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .sem-alertas h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        #loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+    </style>
 </head>
-
-<script>
-    // Verifica se está logado
-    if (!sessionStorage.getItem('usuario_logado')) {
-        window.location.href = 'index.html';
-    }
-</script>
-
 <body>
     <div class="app-container">
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>AVITTA</h2>
             </div>
-            <nav class="sidebar-nav">
-                <a href="menu.html" class="nav-item">
-                    <span class="nav-icon">🏠</span>
-                    <span>Iniciar</span>
-                </a>
-                <a href="cadastro.html" class="nav-item">
-                    <span class="nav-icon">📝</span>
-                    <span>Cadastrar</span>
-                </a>
-                <a href="consultas.html" class="nav-item">
-                    <span class="nav-icon">📋</span>
-                    <span>Registros</span>
-                </a>
-                <a href="alertas.html" class="nav-item active">
-                    <span class="nav-icon">⚠️</span>
-                    <span>Alertas</span>
-                    <span class="badge">3</span>
-                </a>
-            </nav>
+<nav class="sidebar-nav">
+    <a href="menu.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Iniciar</span>
+    </a>
+    <a href="cadastro.html" class="nav-item">
+        <span class="nav-icon">📝</span>
+        <span>Cadastrar</span>
+    </a>
+    <a href="consultas.html" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span>Consultas</span>
+    </a>
+    <a href="profissionais.html" class="nav-item">
+        <span class="nav-icon">👨‍⚕️</span>
+        <span>Profissionais</span>
+    </a>
+    <a href="alertas.html" class="nav-item">
+        <span class="nav-icon">⚠️</span>
+        <span>Alertas</span>
+    </a>
+</nav>
             <div class="sidebar-footer">
                 <button class="btn-logout" onclick="logout()">Sair</button>
             </div>
@@ -46,44 +203,20 @@
 
         <main class="main-content">
             <header class="top-header">
-                <h1>Alertas</h1>
+                <h1>⚠️ Alertas e Pendências</h1>
+                <p style="color: #666; margin-top: 5px;">
+                    <span style="color: #dc3545;">●</span> Atrasados &nbsp;|&nbsp; 
+                    <span style="color: #ffc107;">●</span> Pendentes
+                </p>
             </header>
 
             <div class="content-wrapper">
-                <div class="alertas-grid">
-                    <div class="alert-card alerta-pendente">
-                        <div class="alert-icon">⚠️</div>
-                        <div class="alert-content">
-                            <h3>Exame Pendente</h3>
-                            <p><strong>Paciente:</strong> Ana Araujo</p>
-                            <p><strong>CPF:</strong> 000.000.000-01</p>
-                            <p><strong>Exame:</strong> Ultrassom</p>
-                            <p><strong>Data:</strong> 10/03/2026</p>
-                            <span class="alert-status">PENDENTE</span>
-                        </div>
-                    </div>
-
-                    <div class="alert-card alerta-retorno">
-                        <div class="alert-icon">📅</div>
-                        <div class="alert-content">
-                            <h3>Retorno Pendente</h3>
-                            <p><strong>Paciente:</strong> Beatriz Barros</p>
-                            <p><strong>CPF:</strong> 000.000.000-02</p>
-                            <p><strong>Data do Retorno:</strong> 24/02/2026</p>
-                            <span class="alert-status">PENDENTE</span>
-                        </div>
-                    </div>
-
-                    <div class="alert-card alerta-exame">
-                        <div class="alert-icon"></div>
-                        <div class="alert-content">
-                            <h3>Exame Pendente</h3>
-                            <p><strong>Paciente:</strong> Camila Cardoso</p>
-                            <p><strong>CPF:</strong> 000.000.000-03</p>
-                            <p><strong>Exame:</strong> Urina</p>
-                            <p><strong>Data:</strong> 04/02/2026</p>
-                            <span class="alert-status">ATRASADO</span>
-                        </div>
+                <div class="alertas-container">
+                    <div id="loading">Carregando alertas...</div>
+                    <div id="alertas-grid" class="alertas-grid" style="display:none;"></div>
+                    <div id="sem-alertas" class="sem-alertas" style="display:none;">
+                        <h2>✅ Sem pendências!</h2>
+                        <p>Todos os exames e retornos estão em dia.</p>
                     </div>
                 </div>
             </div>
@@ -91,5 +224,210 @@
     </div>
 
     <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', carregarAlertas);
+
+        async function carregarAlertas() {
+            try {
+                const response = await fetch(`${API_URL}/alertas`);
+                const dados = await response.json();
+                
+                document.getElementById('loading').style.display = 'none';
+                
+                if (!dados || dados.length === 0) {
+                    document.getElementById('sem-alertas').style.display = 'block';
+                    return;
+                }
+                
+                const grid = document.getElementById('alertas-grid');
+                grid.style.display = 'grid';
+                grid.innerHTML = '';
+                
+                // Agrupar por paciente
+                const pacientes = {};
+                dados.forEach(d => {
+                    if (!pacientes[d.ID_Paciente]) {
+                        pacientes[d.ID_Paciente] = {
+                            id: d.ID_Paciente,
+                            nome: d.Nome,
+                            cpf: d.CPF,
+                            telefone: d.Telefone,
+                            rua: d.Rua,
+                            numero: d.Numero,
+                            bairro: d.Bairro,
+                            cidade: d.Cidade,
+                            complemento: d.Complemento,
+                            exames: [],
+                            retornos: [],
+                            temAtraso: false
+                        };
+                    }
+                    
+                    // Só adiciona se NÃO for realizado
+                    if (d.Tipo_Exame && d.Status_Exame && d.Status_Exame !== 'REALIZADO') {
+                        const estaAtrasado = new Date(d.Data_Exame) < new Date();
+                        pacientes[d.ID_Paciente].exames.push({
+                            tipo: d.Tipo_Exame,
+                            data: d.Data_Exame,
+                            status: d.Status_Exame,
+                            atrasado: estaAtrasado
+                        });
+                        if (estaAtrasado) {
+                            pacientes[d.ID_Paciente].temAtraso = true;
+                        }
+                    }
+                    
+                    if (d.Data_Retorno && d.Status_Retorno && d.Status_Retorno !== 'REALIZADO') {
+                        const estaAtrasado = new Date(d.Data_Retorno) < new Date();
+                        pacientes[d.ID_Paciente].retornos.push({
+                            data: d.Data_Retorno,
+                            status: d.Status_Retorno,
+                            atrasado: estaAtrasado
+                        });
+                        if (estaAtrasado) {
+                            pacientes[d.ID_Paciente].temAtraso = true;
+                        }
+                    }
+                });
+                
+                // Criar cards apenas para pacientes com pendências
+                Object.values(pacientes).forEach(p => {
+                    if (p.exames.length > 0 || p.retornos.length > 0) {
+                        const card = criarCardAlerta(p);
+                        grid.appendChild(card);
+                    }
+                });
+                
+                if (grid.children.length === 0) {
+                    grid.style.display = 'none';
+                    document.getElementById('sem-alertas').style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('loading').innerHTML = '<p style="color: #dc3545;">Erro ao carregar alertas.</p>';
+            }
+        }
+
+        function criarCardAlerta(p) {
+            const card = document.createElement('div');
+            
+            // Classe baseada se tem atraso ou não
+            card.className = `alert-card ${p.temAtraso ? 'atrasado' : 'pendente'}`;
+
+            const endereco = `${p.rua || ''}, ${p.numero || ''} - ${p.bairro || ''}, ${p.cidade || ''}`.trim();
+            const complemento = p.complemento ? ` - ${p.complemento}` : '';
+
+            let html = `
+                <div class="alert-header">
+                    <h3>${p.nome}</h3>
+                    <div class="alert-info"><strong>CPF:</strong> ${formatarCPF(p.cpf)}</div>
+                    <div class="alert-info"><strong>Telefone:</strong> ${p.telefone || 'N/A'}</div>
+                    <div class="alert-info"><strong>Endereço:</strong> ${endereco}${complemento}</div>
+                </div>
+                <div class="alert-body">
+            `;
+            
+            if (p.exames.length > 0) {
+                html += `<div class="alert-section"><h4>🔬 Exames</h4>`;
+                p.exames.forEach(e => {
+                    const classeStatus = e.atrasado ? 'atrasado' : 'pendente';
+                    const textoStatus = e.atrasado ? 'ATRASADO' : 'PENDENTE';
+                    html += `
+                        <div class="alert-item">
+                            <strong>${e.tipo}</strong>
+                            <div>Data: ${formatarDataBR(e.data)}</div>
+                            <div>Status: <span class="status-badge status-${classeStatus}">${textoStatus}</span></div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            if (p.retornos.length > 0) {
+                html += `<div class="alert-section"><h4>📅 Retornos</h4>`;
+                p.retornos.forEach(r => {
+                    const classeStatus = r.atrasado ? 'atrasado' : 'pendente';
+                    const textoStatus = r.atrasado ? 'ATRASADO' : 'PENDENTE';
+                    html += `
+                        <div class="alert-item">
+                            <strong>Consulta de Retorno</strong>
+                            <div>Data: ${formatarDataBR(r.data)}</div>
+                            <div>Status: <span class="status-badge status-${classeStatus}">${textoStatus}</span></div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            html += `
+                </div>
+                <div class="alert-footer">
+                    <button class="btn-prontuario" onclick="verProntuario(${p.id})">
+                        📄 Ver Prontuário
+                    </button>
+                </div>
+            `;
+
+            card.innerHTML = html;
+            return card;
+        }
+
+function formatarDataBR(dataISO) {
+    if (!dataISO || dataISO === 'null' || dataISO === '') {
+        return 'N/A';
+    }
+    
+    try {
+        // Remove T00:00:00 e pega apenas a parte da data
+        const dataLimpa = dataISO.toString().replace('T00:00:00', '').split(' ')[0];
+        const partes = dataLimpa.split('-');
+        
+        if (partes.length === 3) {
+            const ano = parseInt(partes[0], 10);
+            const mes = parseInt(partes[1], 10) - 1; // Meses em JS são 0-11
+            const dia = parseInt(partes[2], 10);
+            
+            // Validação básica
+            if (isNaN(ano) || isNaN(mes) || isNaN(dia) || mes < 0 || mes > 11 || dia < 1 || dia > 31) {
+                return dataLimpa;
+            }
+            
+            const meses = [
+                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+            ];
+            
+            const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            
+            // Cria a data com fuso horário UTC para evitar problemas de timezone
+            const data = new Date(Date.UTC(ano, mes, dia));
+            const diaSemana = diasSemana[data.getUTCDay()];
+            const mesNome = meses[data.getUTCMonth()];
+            const diaUTC = data.getUTCDate();
+            
+            return `${diaSemana}, ${String(diaUTC).padStart(2, '0')} de ${mesNome} de ${ano}`;
+        }
+        
+        // Se não estiver no formato YYYY-MM-DD, tenta parsear diretamente
+        const data = new Date(dataISO);
+        if (!isNaN(data.getTime())) {
+            const meses = [
+                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+            ];
+            const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            
+            return `${diasSemana[data.getDay()]}, ${String(data.getDate()).padStart(2, '0')} de ${meses[data.getMonth()]} de ${data.getFullYear()}`;
+        }
+        
+        return dataISO;
+    } catch (e) {
+        console.error('Erro ao formatar data:', dataISO, e);
+        return dataISO || 'N/A';
+    }
+}
+
+    </script>
 </body>
 </html>

@@ -3,17 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AVITTA - Exames</title>
+    <title>AVITTA - Alertas</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .alertas-container {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .alertas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .alert-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--primary-color);
+            transition: transform 0.2s;
+        }
+
+        .alert-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .alert-card.pendente {
+            border-left-color: #dc3545;
+        }
+
+        .alert-card.agendado {
+            border-left-color: #ffc107;
+        }
+
+        .alert-card.realizado {
+            border-left-color: #28a745;
+        }
+
+        .alert-header {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .alert-header h3 {
+            margin: 0 0 8px 0;
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .alert-info {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .alert-info strong {
+            color: #333;
+        }
+
+        .alert-section {
+            margin: 15px 0;
+            padding: 12px;
+            background: #fff9e6;
+            border-radius: 8px;
+        }
+
+        .alert-section h4 {
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .alert-detail {
+            margin: 5px 0;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pendente {
+            background: #ffe6e6;
+            color: #dc3545;
+        }
+
+        .status-agendado {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-realizado {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .alert-footer {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            text-align: right;
+        }
+
+        .btn-prontuario {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.3s;
+        }
+
+        .btn-prontuario:hover {
+            background: var(--secondary-color);
+        }
+
+        .sem-alertas {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .sem-alertas h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
-
-<script>
-    // Verifica se está logado
-    if (!sessionStorage.getItem('usuario_logado')) {
-        window.location.href = 'index.html';
-    }
-</script>
-
 <body>
     <div class="app-container">
         <aside class="sidebar">
@@ -29,9 +159,13 @@
                     <span class="nav-icon">📝</span>
                     <span>Cadastrar</span>
                 </a>
-                <a href="consultas.html" class="nav-item active">
+                <a href="consultas.html" class="nav-item">
                     <span class="nav-icon">📋</span>
                     <span>Registros</span>
+                </a>
+                <a href="profissionais.html" class="nav-item">
+                    <span class="nav-icon">👨‍⚕️</span>
+                    <span>Profissionais</span>
                 </a>
                 <a href="alertas.html" class="nav-item">
                     <span class="nav-icon">⚠️</span>
@@ -45,78 +179,21 @@
 
         <main class="main-content">
             <header class="top-header">
-                <h1>Exames do Atendimento</h1>
-                <button class="btn-voltar" onclick="voltar()">← Voltar</button>
+                <h1>⚠️ Alertas e Pendências</h1>
+                <p style="color: #666; margin-top: 5px;">Pacientes com exames ou retornos pendentes</p>
             </header>
 
             <div class="content-wrapper">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Informações do Atendimento</h2>
+                <div class="alertas-container">
+                    <div id="alertas-loading" style="text-align: center; padding: 40px;">
+                        <p>Carregando alertas...</p>
                     </div>
-                    <div class="card-content">
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <label>Paciente:</label>
-                                <span id="nome-paciente">Ana Araujo</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Data:</label>
-                                <span id="data-atendimento">10/02/2026</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Hora:</label>
-                                <span id="hora-atendimento">10:30</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Profissional:</label>
-                                <span id="profissional">Dr. Silva (ID: 1)</span>
-                            </div>
-                        </div>
+                    <div id="alertas-grid" class="alertas-grid" style="display: none;">
+                        <!-- Alertas serão carregados aqui -->
                     </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Exames Solicitados</h2>
-                    </div>
-                    <div class="card-content">
-                        <div class="table-container">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Tipo de Exame</th>
-                                        <th>Data Solicitação</th>
-                                        <th>Status</th>
-                                        <th>Data Realização</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabela-exames">
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Hemograma</td>
-                                        <td>05/02/2026</td>
-                                        <td><span class="status-realizado">REALIZADO</span></td>
-                                        <td>06/02/2026</td>
-                                        <td>
-                                            <button class="btn-action">📄 Ver</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Ultrassom</td>
-                                        <td>10/03/2026</td>
-                                        <td><span class="status-pendente">PENDENTE</span></td>
-                                        <td>-</td>
-                                        <td>
-                                            <button class="btn-action" onclick="marcarRealizado(2)">✓ Realizar</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div id="sem-alertas" class="sem-alertas" style="display: none;">
+                        <h2>✅ Sem pendências!</h2>
+                        <p>Todos os exames e retornos estão em dia.</p>
                     </div>
                 </div>
             </div>
@@ -126,18 +203,150 @@
     <script src="app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const idAtendimento = localStorage.getItem('atendimento_selecionado');
-            console.log('Exames do atendimento:', idAtendimento);
-            
-            // Aqui você carregaria os exames do backend
-            // Por enquanto, dados estáticos
+            carregarAlertas();
         });
 
-        function marcarRealizado(idExame) {
-            const dataRealizacao = prompt('Digite a data de realização (DD/MM/AAAA):');
-            if (dataRealizacao) {
-                alert(`Exame ${idExame} marcado como realizado em ${dataRealizacao}`);
-                location.reload();
+        async function carregarAlertas() {
+            const loadingDiv = document.getElementById('alertas-loading');
+            const gridDiv = document.getElementById('alertas-grid');
+            const semAlertasDiv = document.getElementById('sem-alertas');
+
+            try {
+                const response = await fetch(`${API_URL}/alertas`);
+                const alertas = await response.json();
+
+                loadingDiv.style.display = 'none';
+
+                if (!alertas || alertas.length === 0) {
+                    gridDiv.style.display = 'none';
+                    semAlertasDiv.style.display = 'block';
+                    return;
+                }
+
+                gridDiv.style.display = 'grid';
+                semAlertasDiv.style.display = 'none';
+                gridDiv.innerHTML = '';
+
+                // Agrupar alertas por paciente
+                const pacientesMap = new Map();
+
+                alertas.forEach(alerta => {
+                    if (!pacientesMap.has(alerta.ID_Paciente)) {
+                        pacientesMap.set(alerta.ID_Paciente, {
+                            paciente: alerta,
+                            exames: [],
+                            retornos: []
+                        });
+                    }
+
+                    if (alerta.Tipo_Exame) {
+                        pacientesMap.get(alerta.ID_Paciente).exames.push(alerta);
+                    }
+
+                    if (alerta.Data_Retorno) {
+                        pacientesMap.get(alerta.ID_Paciente).retornos.push(alerta);
+                    }
+                });
+
+                // Criar cards para cada paciente
+                pacientesMap.forEach((dados, idPaciente) => {
+                    const card = criarCardAlerta(dados);
+                    gridDiv.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar alertas:', error);
+                loadingDiv.innerHTML = '<p style="color: #dc3545;">Erro ao carregar alertas. Verifique se o backend está rodando.</p>';
+            }
+        }
+
+        function criarCardAlerta(dados) {
+            const paciente = dados.paciente;
+            const card = document.createElement('div');
+            
+            // Determinar classe CSS baseada no status mais crítico
+            let classeStatus = 'realizado';
+            const temPendentes = dados.exames.some(e => e.Status_Exame === 'PENDENTE') || 
+                                dados.retornos.some(r => r.Status_Retorno === 'PENDENTE');
+            const temAgendados = dados.exames.some(e => e.Status_Exame === 'AGENDADO') || 
+                                dados.retornos.some(r => r.Status_Retorno === 'AGENDADO');
+            
+            if (temPendentes) classeStatus = 'pendente';
+            else if (temAgendados) classeStatus = 'agendado';
+
+            card.className = `alert-card ${classeStatus}`;
+
+            const endereco = `${paciente.Rua || ''}, ${paciente.Numero || ''} - ${paciente.Bairro || ''}, ${paciente.Cidade || ''}`.trim();
+
+            let html = `
+                <div class="alert-header">
+                    <h3>${paciente.Nome}</h3>
+                    <div class="alert-info"><strong>CPF:</strong> ${formatarCPF(paciente.CPF)}</div>
+                    <div class="alert-info"><strong>Telefone:</strong> ${paciente.Telefone || 'N/A'}</div>
+                    <div class="alert-info"><strong>Endereço:</strong> ${endereco}</div>
+                </div>
+            `;
+
+            // Exames
+            if (dados.exames.length > 0) {
+                html += `<div class="alert-section"><h4>🔬 Exames</h4>`;
+                dados.exames.forEach(exame => {
+                    html += `
+                        <div class="alert-detail">
+                            <strong>${exame.Tipo_Exame}</strong><br>
+                            Data: ${formatarDataBrasil(exame.Data_Exame)}<br>
+                            Status: <span class="status-badge status-${exame.Status_Exame.toLowerCase()}">${exame.Status_Exame}</span>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            // Retornos
+            if (dados.retornos.length > 0) {
+                html += `<div class="alert-section"><h4>📅 Retornos</h4>`;
+                dados.retornos.forEach(retorno => {
+                    html += `
+                        <div class="alert-detail">
+                            Data de retorno: ${formatarDataBrasil(retorno.Data_Retorno)}<br>
+                            Status: <span class="status-badge status-${retorno.Status_Retorno.toLowerCase()}">${retorno.Status_Retorno}</span>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            html += `
+                <div class="alert-footer">
+                    <button class="btn-prontuario" onclick="verProntuario(${paciente.ID_Paciente})">
+                        📄 Ver Prontuário
+                    </button>
+                </div>
+            `;
+
+            card.innerHTML = html;
+            return card;
+        }
+
+        function formatarDataBrasil(dataISO) {
+            if (!dataISO) return 'N/A';
+            
+            try {
+                const data = new Date(dataISO + 'T00:00:00');
+                const dia = String(data.getDate()).padStart(2, '0');
+                const mes = String(data.getMonth() + 1).padStart(2, '0');
+                const ano = data.getFullYear();
+                
+                const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+                const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+                
+                const diaSemana = diasSemana[data.getDay()];
+                const mesNome = meses[data.getMonth()];
+                
+                return `${diaSemana}, ${dia} ${mesNome} ${ano}`;
+            } catch (e) {
+                console.error('Erro ao formatar data:', dataISO, e);
+                return dataISO;
             }
         }
     </script>

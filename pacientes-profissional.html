@@ -12,28 +12,28 @@
             <div class="sidebar-header">
                 <h2>AVITTA</h2>
             </div>
-            <nav class="sidebar-nav">
-                <a href="menu.html" class="nav-item">
-                    <span class="nav-icon">🏠</span>
-                    <span>Iniciar</span>
-                </a>
-                <a href="cadastro.html" class="nav-item">
-                    <span class="nav-icon">📝</span>
-                    <span>Cadastrar</span>
-                </a>
-                <a href="consultas.html" class="nav-item">
-                    <span class="nav-icon">📋</span>
-                    <span>Registros</span>
-                </a>
-                <a href="profissionais.html" class="nav-item active">
-                    <span class="nav-icon">👨‍⚕️</span>
-                    <span>Profissionais</span>
-                </a>
-                <a href="alertas.html" class="nav-item">
-                    <span class="nav-icon">⚠️</span>
-                    <span>Alertas</span>
-                </a>
-            </nav>
+<nav class="sidebar-nav">
+    <a href="menu.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span>Iniciar</span>
+    </a>
+    <a href="cadastro.html" class="nav-item">
+        <span class="nav-icon">📝</span>
+        <span>Cadastrar</span>
+    </a>
+    <a href="consultas.html" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span>Consultas</span>
+    </a>
+    <a href="profissionais.html" class="nav-item">
+        <span class="nav-icon">👨‍⚕️</span>
+        <span>Profissionais</span>
+    </a>
+    <a href="alertas.html" class="nav-item">
+        <span class="nav-icon">⚠️</span>
+        <span>Alertas</span>
+    </a>
+</nav>
             <div class="sidebar-footer">
                 <button class="btn-logout" onclick="logout()">Sair</button>
             </div>
@@ -48,14 +48,14 @@
             <div class="content-wrapper">
                 <div class="profissional-info">
                     <h2>Profissional ID: <span id="id-profissional-display"></span></h2>
-                    <p>Total de pacientes: <strong id="total-pacientes">0</strong></p>
+                    <p id="msg-status"></p>
                 </div>
 
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>ID Paciente</th>
                                 <th>Nome</th>
                                 <th>CPF</th>
                                 <th>Data Início</th>
@@ -65,7 +65,9 @@
                         </thead>
                         <tbody id="tabela-pacientes-profissional">
                             <tr>
-                                <td colspan="6" style="text-align: center; padding: 40px;">Carregando...</td>
+                                <td colspan="6" style="text-align: center; padding: 40px;">
+                                    Carregando...
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -75,68 +77,69 @@
     </div>
 
     <script src="app.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const idProfissional = sessionStorage.getItem('profissional_selecionado');
-            
-            if (!idProfissional) {
-                alert('Nenhum profissional selecionado!');
-                window.location.href = 'profissionais.html';
-                return;
-            }
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const idProfissional = sessionStorage.getItem('profissional_selecionado');
+        
+        if (!idProfissional) {
+            alert('Nenhum profissional selecionado!');
+            window.location.href = 'profissionais.html';
+            return;
+        }
 
-            document.getElementById('id-profissional-display').textContent = idProfissional;
-            carregarPacientesDoProfissional(idProfissional);
-        });
+        document.getElementById('id-profissional-display').textContent = idProfissional;
+        carregarPacientesDoProfissional(idProfissional);
+    });
 
-        async function carregarPacientesDoProfissional(idProfissional) {
-            const tbody = document.getElementById('tabela-pacientes-profissional');
+    async function carregarPacientesDoProfissional(idProfissional) {
+        const tbody = document.getElementById('tabela-pacientes-profissional');
+        const msgStatus = document.getElementById('msg-status');
+        
+        try {
+            const response = await fetch(`${API_URL}/profissionais/${idProfissional}/pacientes`);
+            const pacientes = await response.json();
             
-            try {
-                const response = await fetch(`${API_URL}/profissionais/${idProfissional}/pacientes`);
-                const pacientes = await response.json();
-                
-                tbody.innerHTML = '';
-                
-                if (pacientes.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
-                                Nenhum paciente vinculado
-                            </td>
-                        </tr>
-                    `;
-                    document.getElementById('total-pacientes').textContent = '0';
-                    return;
-                }
-                
-                pacientes.forEach(paciente => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${paciente.ID_Paciente}</td>
-                        <td>${paciente.Nome}</td>
-                        <td>${formatarCPF(paciente.CPF)}</td>
-                        <td>${formatarData(paciente.Data_Inicio)}</td>
-                        <td><span class="status-ativo">ATIVO</span></td>
-                        <td>
-                            <button class="btn-action" onclick="verProntuario(${paciente.ID_Paciente})">📄 Prontuário</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-                
-                document.getElementById('total-pacientes').textContent = pacientes.length;
-            } catch (error) {
-                console.error('Erro:', error);
+            tbody.innerHTML = '';
+            
+            if (pacientes.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: 40px; color: #dc3545;">
-                            Erro ao carregar pacientes
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
+                            Nenhum paciente vinculado a este profissional
                         </td>
                     </tr>
                 `;
+                msgStatus.innerHTML = '<span style="color: #dc3545;">⚠️ Sem pacientes ativos</span>';
+                return;
             }
+            
+            pacientes.forEach(paciente => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${paciente.ID_Paciente}</td>
+                    <td>${paciente.Nome}</td>
+                    <td>${formatarCPF(paciente.CPF)}</td>
+                    <td>${formatarData(paciente.Data_Inicio)}</td>
+                    <td><span class="status-ativo">ATIVO</span></td>
+                    <td>
+                        <button class="btn-action" onclick="verProntuario(${paciente.ID_Paciente})">📄 Prontuário</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            msgStatus.innerHTML = `<span style="color: #28a745;">✅ ${pacientes.length} paciente(s) ativo(s)</span>`;
+        } catch (error) {
+            console.error('Erro:', error);
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: #dc3545;">
+                        Erro ao carregar pacientes
+                    </td>
+                </tr>
+            `;
         }
-    </script>
+    }
+</script>
 </body>
 </html>

@@ -951,3 +951,70 @@ select:focus {
     color: var(--primary-color);
     font-size: 18px;
 }
+
+/* VÍNCULOS */
+.vinculo-card {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    border-left: 4px solid var(--primary-color);
+}
+
+/* ALERTAS GEOLOCALIZADOS */
+.alert-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.alert-header {
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.alert-header h3 {
+    margin: 0 0 5px 0;
+    color: var(--primary-color);
+}
+
+.alert-cidade {
+    color: #666;
+    font-size: 14px;
+}
+
+.alert-body {
+    margin-bottom: 15px;
+}
+
+.alert-exame, .alert-retorno {
+    background: #fff3cd;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.alert-footer {
+    text-align: right;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+}
+
+/* STATUS */
+.status-realizado {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.status-pendente {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.status-agendado {
+    color: #ffc107;
+    font-weight: bold;
+}
